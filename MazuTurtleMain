@@ -1,0 +1,22 @@
+import se.lth.cs.pt.maze.*;
+import se.lth.cs.pt.window.SimpleWindow;
+
+public class TurtleMain {
+
+    public static void main(String[] args) {
+        SimpleWindow w = new SimpleWindow(600, 600,"Test");
+        Maze m = new Maze(5);
+        Turtle t = new Turtle(w, m.getXEntry(), m.getYEntry());
+        MazeWalker mz = new MazeWalker(t);
+        
+        m.draw(w);
+        t.penDown();
+        
+        mz.walk(m);
+        
+    
+    }
+
+}
+
+
