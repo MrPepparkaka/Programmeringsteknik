@@ -1,0 +1,51 @@
+import se.lth.cs.pt.maze.*;
+import se.lth.cs.pt.window.SimpleWindow;
+
+
+public class MazeWalker {
+    private Turtle t;
+    //private Maze m;
+    //SimpleWindow w;
+    
+    public MazeWalker(Turtle turtle){
+        this.t = turtle;
+        //Maze m;
+        
+    }
+    
+    public void walk(Maze maze) {
+        
+        while (true) {
+        
+        if (maze.wallAtLeft(t.getDirection(), t.getX(), t.getY()) && !maze.wallInFront(t.getDirection(), t.getX(), t.getY())) {
+            t.forward(5);
+            SimpleWindow.delay(50);
+        }
+        else if(maze.wallInFront(t.getDirection(), t.getX(), t.getY()) && !maze.wallAtLeft(t.getDirection(), t.getX(), t.getY())) {
+            t.left(270);
+            t.forward(5);
+
+        }
+        else if(!maze.wallInFront(t.getDirection(), t.getX(), t.getY()) && !maze.wallAtLeft(t.getDirection(), t.getX(), t.getY())) {
+            t.left(90);
+            t.forward(5);
+            
+        }
+        
+        
+        
+        
+        
+        
+        else if (t.getY() < 20) {
+            System.out.print("test");
+            break;            }
+        
+    }
+    
+    
+    }
+
+}
+    
+
