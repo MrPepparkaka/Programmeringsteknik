@@ -1,0 +1,38 @@
+package life;
+import java.util.Scanner;
+public class LifeController {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		
+		System.out.println("Hur många rutor vill du spela på?");
+		int r = scan.nextInt();
+		LifeBoard board = new LifeBoard(r, r);
+		LifeView window = new LifeView(board);
+		Life life = new Life(board);
+		window.drawBoard();
+
+		window.update();
+		while (true) {
+			int command = window.getCommand();
+
+			switch (command) {
+			
+			case 1:
+				int row = window.getRow();
+				int col = window.getCol();
+				life.flip(row, col);
+				//System.out.println("Test");
+				break;
+				
+			case 2:
+				life.newGeneration();
+				break;
+				
+			case 3:
+				System.exit(0);
+				break;
+			}
+			window.update();
+		}
+	}
+}
