@@ -1,0 +1,319 @@
+
+import java.util.*;
+
+public class BankApplication {
+
+	static Scanner scan = new Scanner(System.in);
+	static Bank komvux;
+
+	public static void main(String[] arg) {
+		komvux = new Bank();
+		runApplication();
+
+	}
+
+	public static void runApplication() {
+		komvux.addAccount("Hannes Sonesson", (long) 199504192114L);
+		komvux.addAccount("Kajsa Kattsson", (long) 854939433342L);
+		komvux.addAccount("Samuel Sylla", (long) 234235345323L);
+		komvux.addAccount("Grad Svensson", (long) 456754454594L);
+		komvux.addAccount("Bror Brorsson", (long) 199756433443L);
+		komvux.addAccount("Jens Jans", (long) 394059403928L);
+		komvux.addAccount("Kaffe Kopp", (long) 12345);
+
+		printMenu();
+
+	}
+
+	public static void printMenu() {
+		System.out.println(
+				"----------------------------------------------------------------------------------------------------------------------");
+		System.out.println("Bank Menu");
+		System.out.println("1. Search account from users: press 1");
+		System.out.println("2. Search users: press 2");
+		System.out.println("3. Deposit: press 3");
+		System.out.println("4. Withdraw: press 4");
+		System.out.println("5. Transfer money: press 5");
+		System.out.println("6. Create an account: press 6");
+		System.out.println("7. Erase account: press 7");
+		System.out.println("8. Print all accounts: press 8");
+		System.out.println("9. Exit: press 9");
+
+		int val = scan.nextInt();
+
+		if (val == 1) {
+			menu1();
+		} else if (val == 2) {
+			menu2();
+		} else if (val == 3) {
+			menu3();
+		} else if (val == 4) {
+			menu4();
+		} else if (val == 5) {
+			menu5();
+		} else if (val == 6) {
+			menu6();
+		} else if (val == 7) {
+			menu7();
+		} else if (val == 8) {
+			menu8();
+		} else if (val == 9) {
+			System.exit(0);
+		} else {
+			System.out.println("Sorry, that isn´t a option. Try again.");
+			waitForEnter();
+			printMenu();
+
+		}
+
+	}
+
+	public static void menu1() {
+		System.out.println("");
+		System.out.println("Type in your ID-number to search.");
+		// scan.nextLine();
+		long acc = scan.nextLong();
+		if (komvux.findAccountsForHolder(acc).size() == 0) {
+			System.out.println("Sorry! There are no accounts for that given ID " + acc);
+			waitForEnter();
+		} else {
+			for (BankAccount print : komvux.findAccountsForHolder(acc)) {
+				System.out.println(print);
+			}
+			waitForEnter();
+		}
+	}
+
+	public static void menu2() {
+		System.out.println("");
+		System.out.println("Type in your search term");
+		scan.nextLine();
+		String searchName = scan.nextLine();
+		if (komvux.findByPartofName(searchName).size() == 0) {
+			System.out.println("Sorry! Couldn't find a customer, try again with an other phrase.");
+			waitForEnter2();
+		} else {
+			for (Customer customer : komvux.findByPartofName(searchName)) {
+				System.out.println(customer);
+			}
+			waitForEnter2();
+		}
+
+	}
+
+	public static void menu3() {
+		System.out.println("");
+		System.out.println("Please type in your ID");
+		long acc = scan.nextLong();
+		if (komvux.findAccountsForHolder(acc).size() == 0) {
+			System.out.println("No account could be found for that ID");
+			waitForEnter();
+		} else {
+			for (BankAccount print : komvux.findAccountsForHolder(acc)) {
+				System.out.println(print);
+			}
+			System.out.println("");
+			System.out.println("Choose the account to deposit to.");
+			int myAccount = scan.nextInt();
+			ArrayList<BankAccount> accNr = komvux.findByNumber(myAccount);
+
+			if (accNr.size() == 0) {
+				System.out.println("That account does not exist.");
+				waitForEnter();
+			} else if (accNr.size() == 1) {
+				double kr = komvux.findByNumber(myAccount).get(0).getAmount();
+
+				System.out.println("The account " + myAccount + " has a saldo of " + kr + " kr.");
+				System.out.println("How much do you wish to deposit?");
+				double uttag = scan.nextDouble();
+				if (uttag < 0) {
+					System.out.println("Invalid amount!");
+					waitForEnter();
+				} else {
+					komvux.findByNumber(myAccount).get(0).deposit(uttag);
+					System.out.println("You have succefully deposit " + uttag + " kr");
+					System.out.print("You currently have " + komvux.findByNumber(myAccount).get(0).getAmount()
+							+ " kr in your account.");
+				}
+			}
+			waitForEnter();
+		}
+	}
+
+	public static void menu4() {
+		System.out.println("");
+		System.out.println("Please type in your ID");
+		long acc = scan.nextLong();
+		if (komvux.findAccountsForHolder(acc).size() == 0) {
+			System.out.println("No account could be found for that ID");
+		} else {
+			for (BankAccount print : komvux.findAccountsForHolder(acc)) {
+				System.out.println(print);
+			}
+			System.out.println("Choose the account to withdraw from.");
+			int myAccount = scan.nextInt();
+			ArrayList<BankAccount> accnr = komvux.findByNumber(myAccount);
+
+			if (accnr.size() == 0) {
+				System.out.println("That account does not exist.");
+				waitForEnter();
+			} else if (accnr.size() == 1) {
+				double kr = komvux.findByNumber(myAccount).get(0).getAmount();
+				System.out.println("The account " + myAccount + " has a saldo of " + kr + " kr.");
+				System.out.println("How much do you wish to withdraw?");
+				double uttag = scan.nextDouble();
+				if (uttag > kr) {
+					System.out.println("You don't have the funds for that.");
+					waitForEnter();
+				} else {
+					if (uttag < 0) {
+						System.out.println("Invalid amount");
+						waitForEnter();
+					}
+					komvux.findByNumber(myAccount).get(0).withdraw(uttag);
+					System.out.println("You have succefully withdrawn " + uttag + " kr");
+					System.out.print("You currently have " + komvux.findByNumber(myAccount).get(0).getAmount()
+							+ " kr in your account.");
+
+				}
+			}
+		}
+
+		// System.out.println("Choose the amount that you want to withdraw");
+		waitForEnter();
+
+	}
+
+	public static void menu5() {
+		System.out.println("");
+		System.out.println("Please type in your ID");
+		long acc = scan.nextLong();
+		if (komvux.findAccountsForHolder(acc).size() == 0) {
+			System.out.println("No account could be found for that ID");
+		} else {
+			for (BankAccount print : komvux.findAccountsForHolder(acc)) {
+				System.out.println(print);
+			}
+			System.out.println("Choose the account to withdraw from.");
+			int myAccount = scan.nextInt();
+			ArrayList<BankAccount> accnr = komvux.findByNumber(myAccount);
+
+			if (accnr.size() == 0) {
+				System.out.println("That account does not exist.");
+				waitForEnter();
+			} else if (accnr.size() == 1) {
+				// System.out.print("Test001");
+				double kr = komvux.findByNumber(myAccount).get(0).getAmount();
+				System.out.println("The account " + myAccount + " has a saldo of " + kr + " kr.");
+				System.out.println("Which account do you want to transer money to?");
+				int yourAccount = scan.nextInt();
+				ArrayList<BankAccount> yourAcc = komvux.findByNumber(yourAccount);
+
+				if (yourAcc.size() == 0) {
+					System.out.println("That account does not exist.");
+					waitForEnter();
+				} else {
+					System.out.println("How much do you wish to transfer?");
+					double uttag = scan.nextDouble();
+
+					if (uttag > kr || uttag < 0) {
+						System.out.println("Invalid amount.");
+						waitForEnter();
+					} else {
+						komvux.findByNumber(yourAccount).get(0).deposit(uttag);
+						komvux.findByNumber(myAccount).get(0).withdraw(uttag);
+						System.out.println("You have succefully deposit " + uttag + " kr");
+						System.out.print("You currently have " + komvux.findByNumber(myAccount).get(0).getAmount()
+								+ " kr in your account.");
+
+					}
+				}
+			}
+
+			// System.out.println("Choose the amount that you want to withdraw");
+
+			waitForEnter();
+		}
+	}
+
+	public static void menu6() {
+		Long idNr = 0L;
+		String name = null;
+
+		try {
+			System.out.println("Write your full name and then press enter:");
+			System.out.println("");
+			scan.nextLine();
+			name = scan.nextLine();
+			System.out.println("");
+			System.out.println("Write your ID-number, then press enter:");
+			System.out.println("");
+			idNr = scan.nextLong();
+			scan.nextLine();
+			if (komvux.customerExist(idNr) == true) {
+				komvux.addAccount(name, idNr);
+				System.out.println("A new account () has been added to " + name);
+			} else {
+				System.out.println("A new account (" + komvux.addAccount(name, idNr)
+						+ ") has succesfully been created for " + name + ". Welcome to Komvux Bank Inc.");
+			}
+		} catch (java.util.InputMismatchException e) {
+			System.out.println("Sorry! The input didn't match an ID-number.");
+			waitForEnter2();
+		}
+		// komvux.addAccount(name, idNr);
+		waitForEnter2();
+	}
+
+	public static void menu7() {
+		System.out.println("");
+		System.out.println("Write the account number you want to remove:");
+		System.out.println("");
+
+		// try {
+		int number = scan.nextInt();
+		// komvux.removeAccount(number);
+		if (komvux.removeAccount(number) == true) {
+			// komvux.removeAccount(number);
+			System.out.println("The account has been succesfully been removed");
+			// }
+			waitForEnter();
+			// }catch(java.util.InputMismatchException e) {
+			// System.out.println("Sorry! The input did´nt match a account number");
+			// waitForEnter();
+		}
+
+	}
+
+	public static void menu8() {
+		if (komvux.getAllAccounts() == null) {
+			System.out.println("This bank has no accounts...yet!");
+			waitForEnter();
+		} else {
+			for (BankAccount print : komvux.getAllAccounts()) {
+				System.out.println(print);
+			}
+			waitForEnter();
+		}
+	}
+
+	public static void waitForEnter() {
+		System.out.println("");
+		System.out.println("Press enter to go back to menu");
+		// System.lineSeparator();
+		System.out.println("");
+		scan.nextLine();
+		scan.nextLine();
+		printMenu();
+	}
+
+	public static void waitForEnter2() {
+		System.out.println("");
+		System.out.println("Press enter to go back to menu");
+		// System.lineSeparator();
+		System.out.println("");
+		scan.nextLine();
+		printMenu();
+	}
+
+}
