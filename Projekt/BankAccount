@@ -1,0 +1,69 @@
+
+public class BankAccount {
+	private double saldo;
+	private static int acCounter = 100;
+	private int accNr;
+	private Customer customer; // var inte här innan
+
+	/**
+	 * Skapar ett nytt bankkonto åt en innehavare med namn ’holderName’ och id
+	 * ’holderId’. Kontot tilldelas ett unikt kontonummer och innehåller
+	 * inledningsvis 0 kr.
+	 */
+	public BankAccount(String holderName, long holderId) {
+		this(new Customer(holderName, holderId));
+	}
+
+	/**
+	 * Skapar ett nytt bankkonto med innehavare ’holder’. Kontot tilldelas ett unikt
+	 * kontonummer och innehåller inledningsvis 0 kr.
+	 */
+	public BankAccount(Customer holder) {
+		customer = holder; // var inte här innan
+		saldo = 0;
+		accNr = acCounter;
+		acCounter++;
+		toString();
+
+	}
+
+	/** Tar reda på kontots innehavare. */
+	public Customer getHolder() {
+		return customer;
+	}
+
+	/** Tar reda på det kontonummer som identifierar detta konto. */
+	public int getAccountNumber() {
+		return accNr;
+	}
+
+	/** Tar reda på hur mycket pengar som finns på kontot. */
+	public double getAmount() {
+		return saldo;
+	}
+
+	/** Sätter in beloppet ’amount’ på kontot. */
+	public void deposit(double amount) {
+		saldo += amount;
+	}
+
+	/**
+	 * Tar ut beloppet ’amount’ från kontot. Om kontot saknar täckning blir saldot
+	 * negativt.
+	 */
+	void withdraw(double amount) {
+		saldo -= amount;
+
+	}
+
+	/** Returnerar en strängrepresentation av bankkontot. */
+	public String toString() {
+		String saldo = Double.toString(getAmount());
+		String holderInfo = "Account number: " + accNr + " (" + customer.getName() + ", ID-number: "
+				+ customer.getIdNr() + ", Customer number: " + customer.getCustomerNr() + ")" + " Balance: " + saldo
+				+ " kr";
+
+		return holderInfo;
+
+	}
+}
